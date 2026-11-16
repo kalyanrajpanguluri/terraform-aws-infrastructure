@@ -105,6 +105,7 @@ data "aws_iam_policy_document" "github_plan" {
       "s3:GetBucket*",
       "s3:GetAccelerateConfiguration",
       "s3:GetLifecycleConfiguration",
+      "s3:GetReplicationConfiguration",
       "s3:ListBucket"
     ]
 
@@ -199,7 +200,8 @@ data "aws_iam_policy_document" "github_plan" {
 
     actions = [
       "iam:GetRole",
-      "iam:ListAttachedRolePolicies"
+      "iam:ListAttachedRolePolicies",
+      "iam:ListRolePolicies"
     ]
 
     resources = [
