@@ -106,6 +106,7 @@ data "aws_iam_policy_document" "github_plan" {
       "s3:GetAccelerateConfiguration",
       "s3:GetLifecycleConfiguration",
       "s3:GetReplicationConfiguration",
+      "s3:GetEncryptionConfiguration",
       "s3:ListBucket"
     ]
 
