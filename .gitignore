@@ -1,0 +1,20 @@
+# Terraform files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# Terraform variable files containing values
+*.tfvars
+*.tfvars.json
+
+# Secrets
+*.pem
+*.key
+*.secret
+
+# OS files
+.DS_Store
+Thumbs.db
