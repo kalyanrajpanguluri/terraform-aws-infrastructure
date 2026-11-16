@@ -23,3 +23,19 @@ module "s3" {
   bucket_name  = var.app_bucket_name
   project_name = var.project_name
 }
+
+module "github_oidc" {
+  source = "./modules/iam"
+
+  github_owner         = "kalyanrajpanguluri"
+  github_owner_id      = "312638238"
+  github_repository    = "terraform-aws-infrastructure"
+  github_repository_id = "1460425852"
+  github_branch        = "main"
+
+  state_bucket_name = "terraform-state-155335454656-ap-south-1-20261116"
+  state_key         = "terraform/project/terraform.tfstate"
+  app_bucket_name   = var.app_bucket_name
+
+  role_name = "terraform-github-actions-plan"
+}

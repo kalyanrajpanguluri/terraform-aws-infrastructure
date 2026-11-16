@@ -27,3 +27,18 @@ output "app_bucket_arn" {
   description = "Application S3 bucket ARN"
   value       = module.s3.bucket_arn
 }
+
+output "github_actions_role_arn" {
+  description = "GitHub Actions plan-only IAM role"
+  value       = module.github_oidc.github_actions_role_arn
+}
+
+output "github_oidc_provider_arn" {
+  description = "GitHub OIDC provider"
+  value       = module.github_oidc.github_oidc_provider_arn
+}
+
+output "github_oidc_subject" {
+  description = "Exact GitHub subject trusted by the IAM role"
+  value       = module.github_oidc.github_oidc_subject
+}
