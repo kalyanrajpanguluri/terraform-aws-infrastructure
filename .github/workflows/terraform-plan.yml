@@ -1,6 +1,10 @@
-name: Terraform Plan
+name: Terraform CI/CD
 
 on:
+  pull_request:
+    branches:
+      - main
+
   push:
     branches:
       - main
@@ -8,40 +12,61 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: read
 
 jobs:
-  terraform:
-    name: Terraform Validate and Plan
+  validate:
+    name: Terraform Format and Validate
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.17.2
-
-      - name: Configure AWS credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::155335454656:role/terraform-github-actions-plan
-          aws-region: ap-south-1
-
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
 
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
 
       - name: Terraform Initialize
-        run: terraform init -input=false
+        run: terraform init -backend=false -input=false
 
       - name: Terraform Validate
         run: terraform validate
+
+  plan:
+    name: Terraform AWS Plan
+    needs: validate
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.2
+
+      - name: Configure AWS Credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::155335454656:role/terraform-github-actions-plan
+          aws-region: ap-south-1
+
+      - name: Verify AWS Identity
+        run: aws sts get-caller-identity
+
+      - name: Terraform Initialize
+        run: terraform init -input=false
 
       - name: Terraform Plan
         run: terraform plan -input=false -no-color
