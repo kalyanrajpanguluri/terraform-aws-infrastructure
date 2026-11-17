@@ -20,7 +20,7 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidr
   availability_zone       = var.availability_zone
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = {
     Name = "${var.project_name}-public-subnet"
@@ -96,4 +96,15 @@ resource "aws_route" "private_nat" {
   route_table_id         = aws_route_table.private.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.main[0].id
+}
+
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+
+  ingress = []
+  egress  = []
+
+  tags = {
+    Name = "${var.project_name}-default-sg"
+  }
 }
