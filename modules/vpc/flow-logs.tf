@@ -5,7 +5,7 @@ data "aws_partition" "current" {}
 locals {
   vpc_flow_logs_log_group_name = "/aws/vpc/${var.project_name}/flow-logs"
 
-  vpc_flow_logs_log_group_arn = "arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${local.vpc_flow_logs_log_group_name}"
+  vpc_flow_logs_log_group_arn = "arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:${local.vpc_flow_logs_log_group_name}"
 }
 
 data "aws_iam_policy_document" "vpc_flow_logs_assume_role" {
@@ -28,7 +28,7 @@ data "aws_iam_policy_document" "vpc_flow_logs_assume_role" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
       values = [
-        "arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:vpc-flow-log/*"
+        "arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:vpc-flow-log/*"
       ]
     }
   }
