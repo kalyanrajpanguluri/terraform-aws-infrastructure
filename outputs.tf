@@ -42,3 +42,13 @@ output "github_oidc_subject" {
   description = "Exact GitHub subject trusted by the IAM role"
   value       = module.github_oidc.github_oidc_subject
 }
+
+output "cloudtrail_trail_arn" {
+  description = "CloudTrail audit trail ARN"
+  value       = module.cloudtrail.trail_arn
+}
+
+output "cloudtrail_log_bucket" {
+  description = "CloudTrail audit log bucket"
+  value       = module.cloudtrail.log_bucket_name
+}

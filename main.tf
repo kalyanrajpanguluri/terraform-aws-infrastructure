@@ -39,3 +39,12 @@ module "github_oidc" {
 
   role_name = "terraform-github-actions-plan"
 }
+
+module "cloudtrail" {
+  source = "./modules/cloudtrail"
+
+  project_name   = var.project_name
+  app_bucket_arn = module.s3.bucket_arn
+
+  log_retention_days = 365
+}
