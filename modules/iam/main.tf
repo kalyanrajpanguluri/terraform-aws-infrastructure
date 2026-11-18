@@ -114,6 +114,36 @@ data "aws_iam_policy_document" "github_plan" {
     ]
   }
 
+  # Read access-log bucket versioning
+  statement {
+    sid     = "ReadAccessLogBucketVersioning"
+    effect  = "Allow"
+    actions = ["s3:GetBucketVersioning"]
+    resources = [
+      "arn:aws:s3:::terraform-aws-dev-app-155335454656-ap-south-1-access-logs"
+    ]
+  }
+
+  # Read the VPC Flow Logs IAM role
+  statement {
+    sid     = "ReadVpcFlowLogsRole"
+    effect  = "Allow"
+    actions = ["iam:GetRole"]
+    resources = [
+      "arn:aws:iam::155335454656:role/terraform-aws-dev-vpc-flow-logs-role"
+    ]
+  }
+
+  # Read the VPC Flow Logs KMS key
+  statement {
+    sid     = "ReadVpcFlowLogsKmsKey"
+    effect  = "Allow"
+    actions = ["kms:DescribeKey"]
+    resources = [
+      "arn:aws:kms:ap-south-1:155335454656:key/24bd8987-6c26-412f-8a20-c0beac870cd8"
+    ]
+  }
+
   # Read Terraform state bucket location
   statement {
     sid    = "ReadStateBucketLocation"
