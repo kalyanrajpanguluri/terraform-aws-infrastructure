@@ -269,6 +269,7 @@ data "aws_iam_policy_document" "github_plan" {
       "s3:GetBucketPublicAccessBlock",
       "s3:GetBucketTagging",
       "s3:GetBucketVersioning",
+      "s3:GetBucketCORS",
       "s3:GetEncryptionConfiguration",
       "s3:GetLifecycleConfiguration",
       "s3:GetReplicationConfiguration",
@@ -299,6 +300,14 @@ data "aws_iam_policy_document" "github_plan" {
       "arn:aws:kms:ap-south-1:155335454656:key/6cc1c0b8-003f-4b77-af74-21990f984fe4",
       "arn:aws:kms:ap-south-1:155335454656:key/9c15efd3-1769-41a7-bf90-cadfcb580646"
     ]
+  }
+
+  # Read CloudWatch log group metadata.
+  statement {
+    sid       = "ReadCloudWatchLogGroups"
+    effect    = "Allow"
+    actions   = ["logs:DescribeLogGroups"]
+    resources = ["*"]
   }
 
   # KMS alias discovery is an account-level read operation.
