@@ -128,7 +128,7 @@ data "aws_iam_policy_document" "github_plan" {
   statement {
     sid     = "ReadVpcFlowLogsRole"
     effect  = "Allow"
-    actions = ["iam:GetRole", "iam:ListRolePolicies"]
+    actions = ["iam:GetRole", "iam:ListRolePolicies", "iam:GetRolePolicy"]
     resources = [
       "arn:aws:iam::155335454656:role/terraform-aws-dev-vpc-flow-logs-role"
     ]
@@ -138,7 +138,7 @@ data "aws_iam_policy_document" "github_plan" {
   statement {
     sid     = "ReadVpcFlowLogsKmsKey"
     effect  = "Allow"
-    actions = ["kms:DescribeKey", "kms:GetKeyPolicy"]
+    actions = ["kms:DescribeKey", "kms:GetKeyPolicy", "kms:GetKeyRotationStatus"]
     resources = [
       "arn:aws:kms:ap-south-1:155335454656:key/24bd8987-6c26-412f-8a20-c0beac870cd8"
     ]
