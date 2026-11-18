@@ -49,8 +49,11 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.cloudtrail.arn
     }
+
+    bucket_key_enabled = true
   }
 }
 
@@ -83,6 +86,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail" {
 
     noncurrent_version_expiration {
       noncurrent_days = 30
+    }
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
     }
   }
 }
@@ -171,6 +178,7 @@ resource "aws_s3_bucket_policy" "cloudtrail" {
 resource "aws_cloudtrail" "audit" {
   name                          = local.trail_name
   s3_bucket_name                = aws_s3_bucket.cloudtrail.id
+  kms_key_id                    = aws_kms_key.cloudtrail.arn
   include_global_service_events = true
   is_multi_region_trail         = true
   enable_logging                = true

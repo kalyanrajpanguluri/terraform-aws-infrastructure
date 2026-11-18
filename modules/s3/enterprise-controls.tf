@@ -203,3 +203,38 @@ resource "aws_s3_bucket_policy" "app" {
   bucket = aws_s3_bucket.app.id
   policy = data.aws_iam_policy_document.app_bucket_transport.json
 }
+
+# Enable versioning for S3 access logs.
+resource "aws_s3_bucket_versioning" "access_logs" {
+  bucket = aws_s3_bucket.access_logs.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# Retain noncurrent access-log versions for 90 days.
+resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
+  bucket = aws_s3_bucket.access_logs.id
+
+  depends_on = [
+    aws_s3_bucket_versioning.access_logs
+  ]
+
+  rule {
+    id     = "access-log-retention"
+    status = "Enabled"
+
+    filter {
+      prefix = ""
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 90
+    }
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}

@@ -18,3 +18,5 @@ crash.*.log
 # OS files
 .DS_Store
 Thumbs.db
+tfplan*
+checkov-*-report.txt
