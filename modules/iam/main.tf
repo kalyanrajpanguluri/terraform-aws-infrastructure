@@ -13,7 +13,8 @@ locals {
   state_object_arn = "${local.state_bucket_arn}/${var.state_key}"
   lock_object_arn  = "${local.state_object_arn}.tflock"
 
-  app_bucket_arn = "arn:aws:s3:::${var.app_bucket_name}"
+  app_bucket_arn       = "arn:aws:s3:::${var.app_bucket_name}"
+  cloudtrail_trail_arn = "arn:aws:cloudtrail:ap-south-1:${data.aws_caller_identity.current.account_id}:trail/terraform-aws-dev-audit-trail"
 }
 
 # GitHub Actions OIDC identity provider
@@ -265,7 +266,6 @@ data "aws_iam_policy_document" "github_plan" {
       "s3:GetBucketLocation",
       "s3:GetBucketLogging",
       "s3:GetBucketPolicy",
-      "s3:GetBucketPolicyStatus",
       "s3:GetBucketOwnershipControls",
       "s3:GetBucketPublicAccessBlock",
       "s3:GetBucketTagging",
@@ -273,6 +273,7 @@ data "aws_iam_policy_document" "github_plan" {
       "s3:GetBucketCORS",
       "s3:GetBucketWebsite",
       "s3:GetBucketRequestPayment",
+      "s3:GetBucketObjectLockConfiguration",
       "s3:GetEncryptionConfiguration",
       "s3:GetLifecycleConfiguration",
       "s3:GetReplicationConfiguration",
@@ -311,6 +312,30 @@ data "aws_iam_policy_document" "github_plan" {
     effect    = "Allow"
     actions   = ["logs:DescribeLogGroups", "logs:ListTagsForResource"]
     resources = ["*"]
+  }
+
+
+  # Read CloudTrail trail configuration and status.
+  statement {
+    sid       = "DescribeCloudTrailTrails"
+    effect    = "Allow"
+    actions   = ["cloudtrail:DescribeTrails"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "ReadCloudTrailTrail"
+    effect = "Allow"
+
+    actions = [
+      "cloudtrail:GetTrailStatus",
+      "cloudtrail:GetEventSelectors",
+      "cloudtrail:ListTags"
+    ]
+
+    resources = [
+      local.cloudtrail_trail_arn
+    ]
   }
 
   # KMS alias discovery is an account-level read operation.
