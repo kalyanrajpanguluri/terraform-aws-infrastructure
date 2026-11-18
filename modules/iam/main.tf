@@ -128,7 +128,7 @@ data "aws_iam_policy_document" "github_plan" {
   statement {
     sid     = "ReadVpcFlowLogsRole"
     effect  = "Allow"
-    actions = ["iam:GetRole", "iam:ListRolePolicies", "iam:GetRolePolicy"]
+    actions = ["iam:GetRole", "iam:ListRolePolicies", "iam:GetRolePolicy", "iam:ListAttachedRolePolicies"]
     resources = [
       "arn:aws:iam::155335454656:role/terraform-aws-dev-vpc-flow-logs-role"
     ]
@@ -138,7 +138,7 @@ data "aws_iam_policy_document" "github_plan" {
   statement {
     sid     = "ReadVpcFlowLogsKmsKey"
     effect  = "Allow"
-    actions = ["kms:DescribeKey", "kms:GetKeyPolicy", "kms:GetKeyRotationStatus"]
+    actions = ["kms:DescribeKey", "kms:GetKeyPolicy", "kms:GetKeyRotationStatus", "kms:ListResourceTags"]
     resources = [
       "arn:aws:kms:ap-south-1:155335454656:key/24bd8987-6c26-412f-8a20-c0beac870cd8"
     ]
@@ -253,6 +253,62 @@ data "aws_iam_policy_document" "github_plan" {
       local.policy_arn
     ]
   }
+
+  # Read configuration for the three Terraform-managed S3 buckets.
+  statement {
+    sid    = "ReadManagedS3BucketConfigurations"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetBucketAcl",
+      "s3:GetBucketLocation",
+      "s3:GetBucketLogging",
+      "s3:GetBucketPolicy",
+      "s3:GetBucketPolicyStatus",
+      "s3:GetBucketOwnershipControls",
+      "s3:GetBucketPublicAccessBlock",
+      "s3:GetBucketTagging",
+      "s3:GetBucketVersioning",
+      "s3:GetEncryptionConfiguration",
+      "s3:GetLifecycleConfiguration",
+      "s3:GetReplicationConfiguration",
+      "s3:GetAccelerateConfiguration",
+      "s3:ListBucket"
+    ]
+
+    resources = [
+      "arn:aws:s3:::terraform-aws-dev-app-155335454656-ap-south-1",
+      "arn:aws:s3:::terraform-aws-dev-app-155335454656-ap-south-1-access-logs",
+      "arn:aws:s3:::terraform-aws-dev-155335454656-ap-south-1-cloudtrail-logs"
+    ]
+  }
+
+  # Read the CloudTrail and application-bucket KMS keys.
+  statement {
+    sid    = "ReadCloudTrailAndApplicationKmsKeys"
+    effect = "Allow"
+
+    actions = [
+      "kms:DescribeKey",
+      "kms:GetKeyPolicy",
+      "kms:GetKeyRotationStatus",
+      "kms:ListResourceTags"
+    ]
+
+    resources = [
+      "arn:aws:kms:ap-south-1:155335454656:key/6cc1c0b8-003f-4b77-af74-21990f984fe4",
+      "arn:aws:kms:ap-south-1:155335454656:key/9c15efd3-1769-41a7-bf90-cadfcb580646"
+    ]
+  }
+
+  # KMS alias discovery is an account-level read operation.
+  statement {
+    sid       = "ListKmsAliases"
+    effect    = "Allow"
+    actions   = ["kms:ListAliases"]
+    resources = ["*"]
+  }
+
 }
 
 # Create the plan-only IAM policy
