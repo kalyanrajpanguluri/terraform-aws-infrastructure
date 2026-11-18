@@ -82,6 +82,7 @@ data "aws_iam_policy_document" "github_plan" {
 
     actions = [
       "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeFlowLogs",
       "ec2:DescribeInternetGateways",
       "ec2:DescribeRouteTables",
       "ec2:DescribeSecurityGroupRules",
@@ -271,6 +272,7 @@ data "aws_iam_policy_document" "github_plan" {
       "s3:GetBucketVersioning",
       "s3:GetBucketCORS",
       "s3:GetBucketWebsite",
+      "s3:GetBucketRequestPayment",
       "s3:GetEncryptionConfiguration",
       "s3:GetLifecycleConfiguration",
       "s3:GetReplicationConfiguration",
