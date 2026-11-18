@@ -270,6 +270,7 @@ data "aws_iam_policy_document" "github_plan" {
       "s3:GetBucketTagging",
       "s3:GetBucketVersioning",
       "s3:GetBucketCORS",
+      "s3:GetBucketWebsite",
       "s3:GetEncryptionConfiguration",
       "s3:GetLifecycleConfiguration",
       "s3:GetReplicationConfiguration",
@@ -306,7 +307,7 @@ data "aws_iam_policy_document" "github_plan" {
   statement {
     sid       = "ReadCloudWatchLogGroups"
     effect    = "Allow"
-    actions   = ["logs:DescribeLogGroups"]
+    actions   = ["logs:DescribeLogGroups", "logs:ListTagsForResource"]
     resources = ["*"]
   }
 
